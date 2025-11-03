@@ -16,7 +16,9 @@ export const TrafficLightWithEffect = () => {
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
-    if (countdown < 1) return;
+    if (countdown < 1) {
+      setCountdown(5);
+    }
 
     const intervalId = setInterval(() => {
       setCountdown((prev) => prev - 1);
@@ -27,11 +29,35 @@ export const TrafficLightWithEffect = () => {
     };
   }, [countdown]);
 
+  useEffect(() => {
+    if (countdown > 0) return;
+
+    switch (light) {
+      case "red":
+        setLight("green");
+        break;
+      case "green":
+        setLight("yellow");
+        break;
+      case "yellow":
+        setLight("red");
+        break;
+      default:
+        break;
+    }
+  }, [countdown, light]);
+
   return (
-    <div className="min-h-screen from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center p-4">
       <div className="flex flex-col items-center space-y-8">
         <h1 className="text-3xl font-thin">Semáforo con useEffect</h1>
         <h2 className="text-2xl font-bold">{countdown}</h2>
+        <div className="w-full h-2 ">
+          <div className="h-full bg-blue-400" 
+          style={{
+            width: `${countdown*100/5}%`
+          }}></div>
+        </div>
         <div
           className={`w-32 h-32 ${
             light == "red" ? colors.red : colors.gray
